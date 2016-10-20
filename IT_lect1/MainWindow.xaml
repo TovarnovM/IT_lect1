@@ -4,9 +4,23 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IT_lect1"
+        xmlns:oxy="http://oxyplot.org/wpf"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="194*"/>
+            <RowDefinition Height="127*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="35*"/>
+            <ColumnDefinition Width="138*"/>
+        </Grid.ColumnDefinitions>
+        <oxy:PlotView Grid.Column="1" Grid.Row="0" Model="{Binding BallPlot}" Margin="0.333,0,-0.333,-0.334"/>
+        <oxy:PlotView Grid.Row="1"  Model="{Binding GraphPlot}" Margin="0.333,0,-0.333,-0.334" Grid.ColumnSpan="2"/>
+        <Button Grid.Column="0" x:Name="button" Content="Init" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75" Click="button_Click"/>
+        <Button Grid.Column="0" x:Name="button_Copy" Content="OneTtep" HorizontalAlignment="Left" Margin="10,35,0,0" VerticalAlignment="Top" Width="75" Click="button_Copy_Click" />
+        <Button Grid.Column="0" x:Name="button_Copy1" Content="All" HorizontalAlignment="Left" Margin="10,59,0,0" VerticalAlignment="Top" Width="75" Click="button_Copy1_Click"/>
+
     </Grid>
 </Window>
