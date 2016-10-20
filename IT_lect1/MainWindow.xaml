@@ -21,6 +21,7 @@
         <Button Grid.Column="0" x:Name="button" Content="Init" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75" Click="button_Click"/>
         <Button Grid.Column="0" x:Name="button_Copy" Content="OneTtep" HorizontalAlignment="Left" Margin="10,35,0,0" VerticalAlignment="Top" Width="75" Click="button_Copy_Click" />
         <Button Grid.Column="0" x:Name="button_Copy1" Content="All" HorizontalAlignment="Left" Margin="10,59,0,0" VerticalAlignment="Top" Width="75" Click="button_Copy1_Click"/>
+        <Button Grid.Column="0" x:Name="button_Copy2" Content="All" HorizontalAlignment="Left" Margin="10,84,0,0" VerticalAlignment="Top" Width="75" Click="button_Copy2_Click" />
 
     </Grid>
 </Window>

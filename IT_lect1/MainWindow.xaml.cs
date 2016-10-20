@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace IT_lect1 {
     /// <summary>
@@ -57,7 +58,7 @@ namespace IT_lect1 {
             vm.UpdateBall(0,b2);
             vm.UpdateBall(0,b1);
         }
-        public double dt { get; set; } = 0.001;
+        public double dt { get; set; } = 0.1;
         private void button_Copy_Click(object sender,RoutedEventArgs e) {
             b1.EulerStep(dt);
             b2.MidpointStep(dt);
@@ -94,6 +95,19 @@ namespace IT_lect1 {
             vm.UpdateBall(T,b1);
             vm.UpdateBall(T,b2);
             vm.UpdateBall(T,b3);
+        }
+
+        private void button_Copy2_Click(object sender,RoutedEventArgs e) {
+            
+            var timer = new DispatcherTimer() {
+                Interval = TimeSpan.FromMilliseconds(100)
+
+            };
+            var ee = new RoutedEventArgs();
+            timer.Tick += (s,ess) => button_Copy_Click(sender,ee);
+            timer.Start();
+
+
         }
     }
 }
