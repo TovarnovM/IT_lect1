@@ -36,29 +36,33 @@ namespace IT_lect1 {
         private void button_Click(object sender,RoutedEventArgs e) {
             b1.ClearData();
             b2.ClearData();
+            b3.ClearData();
             T = 0;
             b1.X = 0;
             b1.Y = 0;
-            b1.Vx = 1;
-            b1.Vy = 5;
+            b1.Vx = 10;
+            b1.Vy = 50;
             vm.RegisterBall(b1);
             b2.X = 0;
             b2.Y = 0;
-            b2.Vx = 1;
-            b2.Vy = 5;
-            vm.RegisterBall(b2);
+            b2.Vx = 10;
+            b2.Vy = 50;
+           vm.RegisterBall(b2);
             b3.X = 0;
             b3.Y = 0;
-            b3.Vx = 1;
-            b3.Vy = 5;
+            b3.Vx = 10;
+            b3.Vy = 50;
             vm.RegisterBall(b3);
-            sol1 = Ode.Euler(0,b1.Vector0,b1.f,0.1).GetEnumerator();
-            sol2 = Ode.RK45(0,b1.Vector0,b1.f,0.1).GetEnumerator();
+
+            //sol1 = Ode.Euler(0,b1.Vector0,b1.f,0.1).GetEnumerator();
+            //sol2 = Ode.RK45(0,b1.Vector0,b1.f,0.1).GetEnumerator();
             //b2.Vy = 50;
             vm.UpdateBall(0,b2);
             vm.UpdateBall(0,b1);
+            vm.UpdateBall(0,b3);
         }
-        public double dt { get; set; } = 0.1;
+        public double dt { get; set; } = 0.05;
+
         private void button_Copy_Click(object sender,RoutedEventArgs e) {
             b1.EulerStep(dt);
             b2.MidpointStep(dt);
@@ -81,7 +85,7 @@ namespace IT_lect1 {
         }
 
         private void button_Copy1_Click(object sender,RoutedEventArgs e) {
-            while(T < 3) {
+            while(T <30) {
                 b1.EulerStep(dt);
                 b2.MidpointStep(dt);
                 b3.Rk4(dt);
@@ -97,14 +101,19 @@ namespace IT_lect1 {
             vm.UpdateBall(T,b3);
         }
 
+        public DispatcherTimer timer { get; set; } = new DispatcherTimer();
         private void button_Copy2_Click(object sender,RoutedEventArgs e) {
-            
-            var timer = new DispatcherTimer() {
-                Interval = TimeSpan.FromMilliseconds(100)
-
-            };
+            if(timer.IsEnabled) {
+                timer.Stop();
+                return;
+            }
+            timer.Interval = TimeSpan.FromMilliseconds(100);
             var ee = new RoutedEventArgs();
-            timer.Tick += (s,ess) => button_Copy_Click(sender,ee);
+            timer.Tick += (s,ess) => {
+                button_Copy_Click(sender,ee);
+                if(T > 30)
+                    timer.Stop();
+            };
             timer.Start();
 
 

@@ -11,35 +11,29 @@ using System.Threading.Tasks;
 namespace IT_lect1 {
     
     public class Ball {
-        private double _x;
+        private double _x, _y, _vx,_vy;
 
         public double X {
             get { return _x; }
             set { _x = value; }
         }
-
-        private double _y;
-
         public double Y {
             get { return _y; }
             set { _y = value; }
         }
 
-        private double _vx;
-
         public double Vx {
             get { return _vx; }
             set { _vx = value; }
         }
-
-        private double _vy;
-
         public double Vy {
             get { return _vy; }
             set { _vy = value; }
         }
+
         public double V { get { return Math.Sqrt(Vx * Vx + Vy * Vy); } }
 
+        #region GraphStuff
         public void SynchAnnots() {
             AnnotPos.X = _x;
             AnnotPos.Y = _y;
@@ -58,12 +52,25 @@ namespace IT_lect1 {
         public LineSeries SerE { get; set; }
         public LineSeries SerPos { get; set; }
         public IList<LineSeries> SerAll { get; set; }
-
-
-
         public string Name { get; set; }
         public EllipseAnnotation AnnotPos { get; set; }
         public ArrowAnnotation AnnotVel { get; set; }
+        public void ClearData() {
+            foreach(var ser in SerAll) {
+                ser.Points.Clear();
+            }
+            SerPos.Points.Clear();
+        }
+        public void AddData(double t) {
+            SerPos.Points.Add(new DataPoint(X,Y));
+            SerX.Points.Add(new DataPoint(t,X));
+            SerY.Points.Add(new DataPoint(t,Y));
+            SerV.Points.Add(new DataPoint(t,V));
+            SerP.Points.Add(new DataPoint(t,V*Mass));
+            SerE.Points.Add(new DataPoint(t,0.5*Mass*V*V));
+        }
+        #endregion
+
         public Ball(OxyColor color,LineStyle ls, string name = "ball") {
             Name = name;
             AnnotPos  = new EllipseAnnotation() {
@@ -121,27 +128,14 @@ namespace IT_lect1 {
             //SerAll.Add(SerP);
             //SerAll.Add(SerE);
         }
-        public void ClearData() {
-            foreach(var ser in SerAll) {
-                ser.Points.Clear();
-            }
-            SerPos.Points.Clear();
-        }
-        public void AddData(double t) {
-            SerPos.Points.Add(new DataPoint(X,Y));
-            SerX.Points.Add(new DataPoint(t,X));
-            SerY.Points.Add(new DataPoint(t,Y));
-            SerV.Points.Add(new DataPoint(t,V));
-            SerP.Points.Add(new DataPoint(t,V*Mass));
-            SerE.Points.Add(new DataPoint(t,0.5*Mass*V*V));
-        }
+
         public double g { get; set; } = 10;
         public double Smid { get; set; } = Math.PI * 0.25 * 0.15 * 0.15;
         public double Cx { get; set; } = 1;
         public double Ro { get; set; } = 5;
         public double Mass { get; set; } = 10;
 
-        public Vector Vector0 {
+        public Vector Y_curr {
             get {
                 return new Vector(
                     X,
@@ -169,15 +163,23 @@ namespace IT_lect1 {
             res[0] = Vx;//X'
             res[1] = Vy;//Y'
             res[2] = 0;//Vx'
-            res[3] = -g;//Vy'
+            //res[3] = -g;//Vy'
+            res[3] = -g_func(Y);
             return res;
         }
 
+        public double g_func(double h) {
+            if(h < 10)
+                return g;
+            return g * h / 10;
+        }
+
+
         public void EulerStep(double dt) {
-            if(Y <= 0) {
+            if(Y < 0) {
                 Vy = Math.Abs(Vy) * 0.8;
             }
-            Vector0 = Vector0 + f(0,Vector0) * dt;
+            Y_curr = Y_curr + f(0,Y_curr) * dt;
 
             //X += Vx * dt;
             //Y += Vy * dt;
@@ -186,24 +188,24 @@ namespace IT_lect1 {
         }
 
         public void MidpointStep(double dt) {
-            if(Y <= 0) {
+            if(Y < 0) {
                 Vy = Math.Abs(Vy) * 0.8;
             }
-            var v1 = Vector0 + f(0,Vector0) * dt*0.5;
-            Vector0 = Vector0 + f(0,v1) * dt;
+            var v1 = Y_curr + f(0,Y_curr) * dt*0.5;
+            Y_curr = Y_curr + f(0,v1) * dt;
 
         }
 
         public void Rk4(double dt) {
-            if(Y <= 0) {
+            if(Y < 0) {
                 Vy = Math.Abs(Vy) *0.8;
             }
-            var yn = Vector0;
+            var yn = Y_curr;
             var k1 = f(0,yn);
             Vector k2 = f(0 + dt / 2.0,yn + k1 * (dt / 2.0));          
             Vector k3 = f(0 + dt / 2.0,yn + k2 * (dt / 2.0));     
             Vector k4 = f(0 + dt,yn + k3 * dt);
-            Vector0 = yn + (dt / 6.0) * (k1 + 2.0 * k2 + 2.0 * k3 + k4);
+            Y_curr = yn + (dt / 6.0) * (k1 + 2.0 * k2 + 2.0 * k3 + k4);
             
 
         }
